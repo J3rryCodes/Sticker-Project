@@ -6,12 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -20,8 +18,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 @AllArgsConstructor
 public class SecurityConfig {
-
-    private final JwtAuthFilter jwtAuthFilter;
     private final ReactiveUserDetailsService userDetailsService;
 
     @Bean
@@ -39,11 +35,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable()
+        return http
+                .csrf().disable()
                 .authorizeExchange()
-                .pathMatchers("/**").permitAll()
+                .pathMatchers("/api/v1/auth/**","/swagger-ui.html","/webjars/**").permitAll()
+                .pathMatchers("/api/**").hasRole("USER")
+                .anyExchange().authenticated()
                 .and()
-//                .addFilterBefore(jwtAuthFilter, SecurityWebFiltersOrder.HTTP_BASIC)
+                //.addFilterAfter(new JwtAuthFilter(), SecurityWebFiltersOrder.AUTHORIZATION)
+                .httpBasic()
+                .and()
                 .build();
     }
 }

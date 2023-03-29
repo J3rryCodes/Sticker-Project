@@ -4,6 +4,7 @@ package de.ij3rry.stickerproject.controller;
 import de.ij3rry.stickerproject.dto.LoginRequest;
 import de.ij3rry.stickerproject.dto.LoginResponse;
 import de.ij3rry.stickerproject.service.AuthenticationService;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api1/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
     public final AuthenticationService authenticationService;
